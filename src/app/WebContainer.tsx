@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { WebContainer } from '@webcontainer/api'
 import { toast } from "sonner"
 import { Terminal } from 'xterm'
-import 'xterm/css/xterm.css';
+import 'xterm/css/xterm.css'
 
 
 
@@ -27,21 +27,20 @@ export default function WebContainerComponent() {
     try {
       const terminal = new Terminal({
         convertEol: true,
-
       })
-      terminal?.open(terminalRef.current!);
+      terminal?.open(terminalRef.current!)
 
       // Call only once
       webcontainerInstance = await WebContainer.boot()
       await webcontainerInstance.mount(files)
 
-      const exitCode = await installDeps(terminal);
+      const exitCode = await installDeps(terminal)
       if (exitCode !== 0) {
         toast.error("Dependency Installation Failed")
         return
       }
 
-      startDevServer(terminal);
+      startDevServer(terminal)
 
     } catch (error: any) {
       if (!(error.message as string).includes('single')) {
@@ -60,11 +59,11 @@ export default function WebContainerComponent() {
     const installProcess = await webcontainerInstance.spawn('pnpm', ['install'])
     installProcess.output.pipeTo(new WritableStream({
       write(data) {
-        terminal?.write(data);
+        terminal?.write(data)
         // toast.info(data)
       }
     }))
-    return installProcess.exit;
+    return installProcess.exit
   }
 
   async function startDevServer(terminal?: Terminal) {
@@ -82,7 +81,7 @@ export default function WebContainerComponent() {
       if (frameRef.current) {
         frameRef.current.src = url
       }
-    });
+    })
   }
 
   async function writeIndexJS(content: string) {
@@ -91,14 +90,14 @@ export default function WebContainerComponent() {
 
 
   // ah yes, we meet again use effect
-  const ref = useRef(false)
   useEffect(() => {
     initialize()
-  }, [initialize])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     writeIndexJS(input)
-  },[input])
+  }, [input])
 
 
 
@@ -110,7 +109,7 @@ export default function WebContainerComponent() {
           className="px-8 h-64 pb-0"
           wrap="off"
           value={input}
-          onChange={(e)=>setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
         />
       </div>
       <div className="preview mt-4 px-0">
