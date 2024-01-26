@@ -35,6 +35,8 @@ export default function WebContainerComponent() {
         return
       }
 
+      terminal.writeln("Type command here, example: npm start")
+
       // startDevServer(terminal)
 
       webcontainerInstance.on('server-ready', (port, url) => {
