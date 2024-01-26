@@ -22,6 +22,8 @@ export default function WebContainerComponent() {
     try {
       const terminal = new Terminal({
         convertEol: true,
+        rows: 12,
+        fontSize: 12,
       })
       terminal?.open(terminalRef.current!)
 
@@ -35,7 +37,7 @@ export default function WebContainerComponent() {
         return
       }
 
-      terminal.writeln("Type command here, example: npm start")
+      terminal.writeln("Type command here, example: pnpm start")
 
       // startDevServer(terminal)
 
@@ -127,7 +129,7 @@ export default function WebContainerComponent() {
 
   return (
     <>
-      <div className="editor px-0 bg-[#222]">
+      <div className="editor px-0 text-white/80 text-sm">
         <textarea
           ref={inputRef}
           className="px-8 h-64 pb-0"
@@ -136,14 +138,14 @@ export default function WebContainerComponent() {
           onChange={(e) => setInput(e.target.value)}
         />
       </div>
-      <div className="preview mt-4 px-0">
+      <div className="px-0">
         <iframe
           ref={frameRef}
-          className="px-8 bg-white w-full h-64"
+          className="px-8 bg-white w-full h-28"
           src="loading.html"></iframe>
       </div>
       <div
-        className="terminal bg-black mt-4 overflow-y-scroll"
+        className="bg-black py-8 overflow-y-scroll"
         ref={terminalRef}
       />
     </>
