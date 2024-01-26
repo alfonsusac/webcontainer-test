@@ -6,16 +6,11 @@ import { toast } from "sonner"
 import { Terminal } from 'xterm'
 import 'xterm/css/xterm.css'
 
-
-
 let webcontainerInstance: WebContainer
-let ignore = false
-
 
 export default function WebContainerComponent() {
 
   const [input, setInput] = useState(files['index.js'].file.contents)
-
 
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const frameRef = useRef<HTMLIFrameElement>(null)
@@ -40,7 +35,16 @@ export default function WebContainerComponent() {
         return
       }
 
-      startDevServer(terminal)
+      // startDevServer(terminal)
+
+      webcontainerInstance.on('server-ready', (port, url) => {
+        // toast.success('Server Ready')
+        if (frameRef.current) {
+          frameRef.current.src = url
+        }
+      })
+
+      startShell(terminal)
 
     } catch (error: any) {
       if (!(error.message as string).includes('single')) {
@@ -86,6 +90,24 @@ export default function WebContainerComponent() {
 
   async function writeIndexJS(content: string) {
     await webcontainerInstance?.fs.writeFile('/index.js', content)
+  }
+
+  async function startShell(terminal?: Terminal) {
+    const shellProcess = await webcontainerInstance.spawn('jsh')
+    shellProcess.output.pipeTo(
+      new WritableStream({
+        write(data) {
+          terminal?.write(data)
+        },
+      })
+    )
+
+    const input = shellProcess.input.getWriter()
+    terminal?.onData((data) => {
+      input.write(data)
+    })
+
+    return shellProcess
   }
 
 
