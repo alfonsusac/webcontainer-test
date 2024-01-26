@@ -27,6 +27,7 @@ export default function WebContainerComponent() {
     try {
       const terminal = new Terminal({
         convertEol: true,
+
       })
       terminal?.open(terminalRef.current!);
 
@@ -92,13 +93,8 @@ export default function WebContainerComponent() {
   // ah yes, we meet again use effect
   const ref = useRef(false)
   useEffect(() => {
-    if (ref.current) {
-      initialize()
-    }
-    return () => {
-      ref.current = true
-    }
-  }, [])
+    initialize()
+  }, [initialize])
 
   useEffect(() => {
     writeIndexJS(input)
@@ -123,7 +119,10 @@ export default function WebContainerComponent() {
           className="px-8 bg-white w-full h-64"
           src="loading.html"></iframe>
       </div>
-      <div className="terminal bg-black mt-4" ref={terminalRef} />
+      <div
+        className="terminal bg-black mt-4 overflow-y-scroll"
+        ref={terminalRef}
+      />
     </>
   )
 }
